@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: stroke-prediction-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python inference.py
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: PORT
+        generateValue: true
