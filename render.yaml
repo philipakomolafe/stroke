@@ -1,7 +1,7 @@
 services:
   - type: web
     name: stroke-prediction-api
-    env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python inference.py
     plan: free

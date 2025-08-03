@@ -4,6 +4,7 @@ import uvicorn
 import joblib
 import os
 import logging
+import pandas as pd
 import numpy as np
 
 # Configure logging
@@ -80,21 +81,21 @@ async def predict_stroke(input_data: StrokeInput):
     try:
         if model is None or preprocessor is None:
             raise HTTPException(status_code=503, detail="Model or preprocessor not loaded")
-        
-        # Convert input to array
-        input_array = np.array([[
-            input_data.age,
-            input_data.gender,
-            input_data.height,
-            input_data.weight,
-            input_data.systolic_bp,
-            input_data.diastolic_bp,
-            input_data.bmi
-        ]])
+
+        # Convert input to pandas DataFrame
+        input_df = pd.DataFrame({
+            "age": [input_data.age],
+            "gender": [input_data.gender],
+            "height": [input_data.height],
+            "weight": [input_data.weight],
+            "Systolic_BP": [input_data.systolic_bp],
+            "Diastolic_BP": [input_data.diastolic_bp],
+            "BMI": [input_data.bmi]
+        })
         
         # Preprocess the data
-        processed_data = preprocessor.transform(input_array)
-        
+        processed_data = preprocessor.transform(input_df)
+
         # Make prediction
         prediction = model.predict(processed_data)[0]
         probability = model.predict_proba(processed_data)[0][1]
