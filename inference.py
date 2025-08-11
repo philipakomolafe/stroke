@@ -101,7 +101,7 @@ async def predict_stroke(input_data: StrokeInput):
         probability = model.predict_proba(processed_data)[0][1]
         
         # Determine risk level
-        risk_level = "High" if probability > 0.7 else "Medium" if probability > 0.3 else "Low"
+        risk_level = "High" if probability >= 0.7 else "Low"
         
         return StrokePrediction(
             prediction=int(prediction),
