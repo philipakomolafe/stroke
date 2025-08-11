@@ -10,6 +10,7 @@ import numpy as np
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+CHOSEN_THRESHOLD = 0.22383578556644732
 
 # FastAPI app instance
 app = FastAPI(title="Stroke Prediction API", version="1.0.0")
@@ -101,7 +102,7 @@ async def predict_stroke(input_data: StrokeInput):
         probability = model.predict_proba(processed_data)[0][1]
         
         # Determine risk level
-        risk_level = "High" if probability >= 0.7 else "Low"
+        risk_level = "High" if probability >= CHOSEN_THRESHOLD else "Low"
         
         return StrokePrediction(
             prediction=int(prediction),
