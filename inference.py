@@ -10,7 +10,7 @@ import numpy as np
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-CHOSEN_THRESHOLD = 0.7416
+CHOSEN_THRESHOLD = 0.30
 
 # FastAPI app instance
 app = FastAPI(title="Stroke Prediction API", version="1.0.0")
