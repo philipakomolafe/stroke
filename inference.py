@@ -25,6 +25,7 @@ class StrokeInput(BaseModel):
     weight: float = Field(..., ge=10, le=500, description="Weight in kilograms (kg)")
     systolic_bp: float = Field(..., ge=50, le=250, description="Systolic Blood Pressure")
     diastolic_bp: float = Field(..., ge=30, le=150, description="Diastolic Blood Pressure")
+    BMI: float 
 
 class StrokePrediction(BaseModel):
     prediction: int  # 0 or 1
@@ -117,6 +118,7 @@ async def predict_stroke(input_data: StrokeInput):
             "weight": [input_data.weight],
             "Systolic_BP": [input_data.systolic_bp],
             "Diastolic_BP": [input_data.diastolic_bp],
+            "BMI":  [input_data.BMI],
         })
 
         # Data preprocessing steps
@@ -132,7 +134,7 @@ async def predict_stroke(input_data: StrokeInput):
         # Diastolic BP.
         df['Diastolic_BP'] = df['Diastolic_BP'].clip(df['Diastolic_BP'].quantile(0.01),
                                                     df['Diastolic_BP'].quantile(0.99))
-        df['DBP_yj'] = PowerTransformer(method='yeo-johnson').fit_transform(df[['Diastolic BP']])
+        df['DBP_yj'] = PowerTransformer(method='yeo-johnson').fit_transform(df[['Diastolic_BP']])
 
         # Body Mass Index (BMI).
         df['BMI'] = df['weight'] / ((df['height']/100)**2) # numerical adjustments.
