@@ -135,6 +135,8 @@ async def predict_stroke(input_data: StrokeInput):
         df['Diastolic_BP'] = df['Diastolic_BP'].clip(df['Diastolic_BP'].quantile(0.01),
                                                     df['Diastolic_BP'].quantile(0.99))
         df['DBP_yj'] = PowerTransformer(method='yeo-johnson').fit_transform(df[['Diastolic_BP']])
+        df["gender"] = [1 if gender == "Male" else 0 for gender in df['gender']]
+
 
         # Body Mass Index (BMI).
         df['BMI'] = df['weight'] / ((df['height']/100)**2) # numerical adjustments.
