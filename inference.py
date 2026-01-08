@@ -6,7 +6,10 @@ import pandas as pd
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from typing import Any, Optional
 from sklearn.preprocessing import PowerTransformer
+import google.genai as gen
+
 
 
 # Configure logging
@@ -25,12 +28,18 @@ class StrokeInput(BaseModel):
     weight: float = Field(..., ge=10, le=500, description="Weight in kilograms (kg)")
     systolic_bp: float = Field(..., ge=50, le=250, description="Systolic Blood Pressure")
     diastolic_bp: float = Field(..., ge=30, le=150, description="Diastolic Blood Pressure")
-    BMI: float 
+    BMI: float = None
 
 class StrokePrediction(BaseModel):
     prediction: int  # 0 or 1
     probability: float
     risk_level: str
+
+class HealthCheck(BaseModel):
+    status: Optional[str]
+    model_loaded: Optional[Any]
+    version: Optional[str]
+    message: Optional[str]
 
 # Global variables
 model = None
@@ -63,16 +72,20 @@ async def startup_event():
 @app.get("/")
 async def root():
     """Health check endpoint"""
-    return {"message": "Stroke Prediction API is running", "status": "healthy"}
+    return HealthCheck(
+        message="Stroke Prediction API is running",
+        status="healthy"
+        )
 
 @app.get("/health")
 async def health_check():
     """Detailed health check"""
-    return {
-        "status": "healthy",
-        "model_loaded": model is not None,
-        "version": "1.0.0"
-    }
+    
+    return HealthCheck(
+        status="healthy",
+        model_loaded=model is not None,
+        version="1.0.0"
+    )
 
 @app.post("/predict", response_model=StrokePrediction)
 async def predict_stroke(input_data: StrokeInput):
