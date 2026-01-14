@@ -35,10 +35,10 @@ class StrokePrediction(BaseModel):
     risk_level: str
 
 class HealthCheck(BaseModel):
-    status: Optional[str]
-    model_loaded: Optional[Any]
-    version: Optional[str]
-    message: Optional[str]
+    status: Optional[str] = "healthy"
+    model_loaded: bool = False
+    version: Optional[str] = "1.0.0"
+    message: Optional[str] = None
 
 # Global variables
 model = None
@@ -82,7 +82,7 @@ async def health_check():
     
     return HealthCheck(
         status="healthy",
-        model_loaded=model is not None,
+        model_loaded=True if model is not None else False,
         version="1.0.0"
     )
 
